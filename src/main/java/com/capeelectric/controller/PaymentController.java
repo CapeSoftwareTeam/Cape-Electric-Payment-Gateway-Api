@@ -28,7 +28,7 @@ public class PaymentController {
 	@PostMapping(value = "/submitPaymentDetail")
 	public ResponseEntity<TreeMap<String, String>> getRedirect(@RequestParam(name = "CUST_ID") String customerId,
 			@RequestParam(name = "TXN_AMOUNT") String transactionAmount,
-			@RequestParam(name = "ORDER_ID") String orderId) throws Exception {
+			@RequestParam(name = "ORDER_ID") String orderId) throws Exception { 
 
 		TreeMap<String, String> submitPayment = paymentService.submitPayment(customerId, transactionAmount, orderId);
 

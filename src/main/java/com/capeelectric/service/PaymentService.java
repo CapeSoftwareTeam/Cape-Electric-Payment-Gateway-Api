@@ -10,5 +10,5 @@ public interface PaymentService {
 
 	public TreeMap<String, String> submitPayment(String customerId, String transactionAmount, String orderId) throws Exception;
 
-	public String responseRedirect(HttpServletRequest request, Model model) throws Exception;
+	public void responseRedirect(HttpServletRequest request, Model model) throws Exception;
 }

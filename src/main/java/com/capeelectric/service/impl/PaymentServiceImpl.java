@@ -42,7 +42,7 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	@Override
-	public String responseRedirect(HttpServletRequest request, Model model) throws Exception {
+	public void responseRedirect(HttpServletRequest request, Model model) throws Exception {
 		Map<String, String[]> mapData = request.getParameterMap();
 		TreeMap<String, String> parameters = new TreeMap<String, String>();
 		String paytmChecksum = "";
@@ -74,7 +74,7 @@ public class PaymentServiceImpl implements PaymentService {
 		model.addAttribute("result", result);
 		parameters.remove("CHECKSUMHASH");
 		model.addAttribute("parameters", parameters);
-		return "report";
+
 	}
 
 	private boolean validateCheckSum(TreeMap<String, String> parameters, String paytmChecksum) throws Exception {
