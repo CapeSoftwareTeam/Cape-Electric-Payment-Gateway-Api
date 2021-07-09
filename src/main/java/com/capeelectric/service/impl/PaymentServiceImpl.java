@@ -1,8 +1,8 @@
 package com.capeelectric.service.impl;
 
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.capeelectric.model.PaytmDetailPojo;
 import com.capeelectric.service.PaymentService;
@@ -25,9 +24,9 @@ public class PaymentServiceImpl implements PaymentService {
 	private Environment env;
 
 	@Override
-	public ModelAndView submitPayment(String customerId, String transactionAmount, String orderId) throws Exception {
+	public TreeMap<String, String> submitPayment(String customerId, String transactionAmount, String orderId)
+			throws Exception {
 
-		ModelAndView modelAndView = new ModelAndView("redirect:" + paytmDetailPojo.getPaytmUrl());
 		TreeMap<String, String> parameters = new TreeMap<>();
 		paytmDetailPojo.getDetails().forEach((k, v) -> parameters.put(k, v));
 		parameters.put("MOBILE_NO", env.getProperty("paytm.mobile"));
@@ -35,10 +34,11 @@ public class PaymentServiceImpl implements PaymentService {
 		parameters.put("ORDER_ID", orderId);
 		parameters.put("TXN_AMOUNT", transactionAmount);
 		parameters.put("CUST_ID", customerId);
+		parameters.put("redirect:", paytmDetailPojo.getPaytmUrl());
 		String checkSum = getCheckSum(parameters);
 		parameters.put("CHECKSUMHASH", checkSum);
-		modelAndView.addAllObjects(parameters);
-		return modelAndView;
+
+		return parameters;
 	}
 
 	@Override
