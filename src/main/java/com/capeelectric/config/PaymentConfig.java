@@ -1,23 +1,36 @@
 package com.capeelectric.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 /**
  * @author CAPE-SOFTWARE
  *
  */
-@Configuration
+@Component
 public class PaymentConfig {
 
-	private static final String SECRET_ID = "rzp_test_wxVWzTGIN9qx5w";
-	private static final String SECRET_KEY = "e0Pwj9SxvLuyTqOn3wbcVALG";
+	@Value("${secret.id}")
+	private String secretId;
 
-	public static String getSecretId() {
-		return SECRET_ID;
+	@Value("${secret.key}")
+	private String secretKey;
+
+	public String getSecretId() {
+		return secretId;
 	}
 
-	public static String getSecretKey() {
-		return SECRET_KEY;
+	public void setSecretId(String secretId) {
+		this.secretId = secretId;
+	}
+
+	public String getSecretKey() {
+		return secretKey;
+	}
+
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
 	}
 
 }

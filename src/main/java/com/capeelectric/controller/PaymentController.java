@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,8 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.capeelectric.config.PaymentConfig;
@@ -31,19 +32,20 @@ import com.razorpay.RazorpayException;
 @RestController
 @RequestMapping("/api/v1")
 public class PaymentController {
+	
+	@Autowired
+	private PaymentConfig paymentConfig;
+	
+	private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
 	private RazorpayClient client;
 	private static Gson gson = new Gson();
 
-	public PaymentController() throws RazorpayException {
-		this.client = new RazorpayClient(PaymentConfig.getSecretId(), PaymentConfig.getSecretKey());
-	}
-
-	@PostMapping(value = "/createPayment")
-	public ResponseEntity<String> createOrder(@RequestBody Customer customer) {
-
+	@PostMapping(value = "/createPayment") 
+	public ResponseEntity<String> createOrder(@RequestBody Customer customer) throws RazorpayException {
+		this.client = new RazorpayClient(paymentConfig.getSecretId(), paymentConfig.getSecretKey());
 		try {
-
+			logger.debug(null);
 			Order order = createRazorPayOrder(customer.getAmount());
 			RazorPay razorPay = getRazorPay((String) order.get("id"), customer);
 
@@ -56,7 +58,7 @@ public class PaymentController {
 
 	@GetMapping(value = "/fetchOrder/{orderId}")
 	public ResponseEntity<String> fetchOrder(@PathVariable String orderId) throws RazorpayException {
-
+		this.client = new RazorpayClient(paymentConfig.getSecretId(), paymentConfig.getSecretKey());
 		Order fetch = client.Orders.fetch(orderId);
 		return new ResponseEntity<String>(fetch.get("status").toString(), HttpStatus.OK);
 	}
@@ -76,7 +78,7 @@ public class PaymentController {
 		// razorPay.setMerchantName("Test");
 		// razorPay.setPurchaseDescription("TEST PURCHASES");
 		razorPay.setRazorpayOrderId(orderId);
-		razorPay.setSecretKey(PaymentConfig.getSecretId());
+		razorPay.setSecretKey(paymentConfig.getSecretId());
 		// razorPay.setImageURL("/logo");
 		// razorPay.setTheme("#F37254");
 		razorPay.setNotes("notes" + orderId);
